@@ -114,20 +114,23 @@ void shift_point(struct NumberDescription *number, uint32_t *val) // смеща�
     *val = *val >> 9;
 }
 
-void concatenate_parts(struct NumberDescription *number) // знак + характеристика + мантисса
+void concatenate_parts(struct NumberDescription *number, uint32_t val) // знак + характеристика + мантисса
 {
     if (number->sign == true)
     {
         number->bin_val = number->bin_val | (1 << 31);
     }
-    // std::cout << std::bitset<sizeof(number->exponent) * CHAR_BIT>(number->exponent) << "\n";
+
     uint32_t characteristic = number->exponent + 127;
-    // std::cout << "Characteristic = " << characteristic << std::endl;
-    // std::cout << std::bitset<sizeof(characteristic) * CHAR_BIT>(characteristic) << "\n";
 
-    // characteristic = characteristic << 30;
+    characteristic = characteristic << 23;
 
-    // number->bin_val = number->bin_val | (characteristic << 30);
+    number->bin_val = number->bin_val | characteristic;
+
+    number->bin_val = number->bin_val >> 23;
+    number->bin_val = number->bin_val << 23;
+
+    number->bin_val = number->bin_val | val;
 }
 
 uint32_t reverse(uint32_t old_val) // меняем порядок битов с прямого на обратный
