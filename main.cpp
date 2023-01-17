@@ -41,7 +41,7 @@ void split(struct NumberDescription *number)
     number->fractpart = (modf(abs(number->val), &number->intpart)); // находим целую и дробную часть
 }
 
-void convert_float_part_to_binary(struct NumberDescription *number)
+int convert_float_part_to_binary(struct NumberDescription *number)
 {
     uint32_t val = 0;
 
@@ -53,7 +53,7 @@ void convert_float_part_to_binary(struct NumberDescription *number)
 
     int result;
 
-    int num_significant_digit;
+    int size_intpart;
     int offset = 0;
 
     if (tmp_intpart == 0)
@@ -69,40 +69,82 @@ void convert_float_part_to_binary(struct NumberDescription *number)
         tmp_intpart = tmp_intpart / 2;
         std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
     }
-    num_significant_digit = offset;
-    std::cout << "num_significant_digit: " << num_significant_digit << std::endl;
+    size_intpart = offset;
+    std::cout << "Intpart = " << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+    std::cout << "size_intpart: " << size_intpart << std::endl;
+    if (size_intpart > 24)
+    {
+        std::cout << "Число превышает допустимый диапазон\n";
+        return -1;
+    }
 
     val = swap(val);
-    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+    std::cout << "Before swap: " << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
 
-    for (offset = 31 - num_significant_digit; tmp_fractpart != 0 && offset >= 0; offset--)
+    std::cout << "Start\n";
+
+    for (offset = 31 - size_intpart; tmp_fractpart != 0 && offset >= 0; offset--)
     {
         tmp_fractpart = tmp_fractpart * 2;
         result = int(tmp_fractpart);
         val = val | (result << offset);
         tmp_fractpart = tmp_fractpart - result;
-        // std::cout << tmp_fractpart << std::endl;
-        //  std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+        std::cout << tmp_fractpart << std::endl;
+        std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
     }
 
+    std::cout << "End\n";
+
     std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+
+    /*int exponent = 0;
+    int res = 0;
+
+    if (size_intpart == 1)
+    {
+        for (int i = 31; i >= 0; i--)
+        {
+            res = val >> 31;
+            val = val << 1;
+            if (res == 1)
+            {
+                break;
+                ;
+            }
+            else
+            {
+                exponent--;
+            }
+            std::cout << "--------";
+            std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+            std::cout << "Exponent = " << exponent << "\n";
+
+            std::cout << "--------";
+        }
+    }
+    else if (size_intpart > 1)
+    {
+        exponent = size_intpart - 1;
+        val = val << 1;
+    }
+    std::cout << "Exponent = " << exponent << "\n";
+    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";*/
+    return 0;
 }
 
 uint32_t swap(uint32_t old_val)
 {
-    uint32_t new_val;
+    uint32_t new_val = 0;
     int result;
     for (int i = 0; i <= 31; i++)
     {
         result = old_val & 1;
         old_val = old_val >> 1;
-        // std::cout << std::bitset<sizeof(old_val) * CHAR_BIT>(old_val) << "\n";
         new_val = new_val | result;
         if (i != 31)
             new_val = new_val << 1;
     }
-    // std::cout << std::bitset<sizeof(old_val) * CHAR_BIT>(old_val) << "\n";
-    // std::cout << std::bitset<sizeof(new_val) * CHAR_BIT>(new_val) << "\n";
+
     return new_val;
 }
 
@@ -122,7 +164,7 @@ int main()
 
     // std::cout << "Введите число: \n";
     // std::cin >> number.val;
-    number.val = 0.25;
+    number.val = 0.125;
 
     split(&number);
 
