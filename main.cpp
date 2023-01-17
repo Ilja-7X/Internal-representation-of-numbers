@@ -9,10 +9,12 @@ uint32_t reverse(uint32_t old_val);
 
 struct NumberDescription
 {
-    double val = 0;
+    double input_val = 0;
     bool sign;
     double intpart = 0;
     double fractpart = 0;
+    int size_intpart = 0;
+    int exponent = 0;
     uint32_t bin_val = 0;
 };
 
@@ -31,17 +33,17 @@ int countBits(uint32_t val) // подсчёт количества значащ�
 
 void split(struct NumberDescription *number)
 {
-    if (number->val < 0)
+    if (number->input_val < 0)
     {
         number->sign = true;
     }
     else
         number->sign = false;
 
-    number->fractpart = (modf(abs(number->val), &number->intpart)); // находим целую и дробную часть
+    number->fractpart = (modf(abs(number->input_val), &number->intpart)); // находим целую и дробную часть
 }
 
-uint32_t convert_float_part_to_binary(struct NumberDescription *number)
+uint32_t convert_float_part_to_binary(struct NumberDescription *number) // перевод числа в двоичный вид
 {
     uint32_t val = 0;
 
@@ -86,7 +88,7 @@ uint32_t convert_float_part_to_binary(struct NumberDescription *number)
     return val;
 }
 
-void shift_point(struct NumberDescription *number, uint32_t *val)
+void shift_point(struct NumberDescription *number, uint32_t *val) // смещаем точку
 {
     int exponent = 0;
     int res = 0;
@@ -156,18 +158,23 @@ int main()
 {
     struct NumberDescription number;
 
-    // std::cout << "Введите число: \n";
-    // std::cin >> number.val;
-    number.val = 0.125;
+    std::cout << "Введите число: \n";
+    std::cin >> number.input_val;
 
     split(&number);
 
-    std::cout << number.val << " = "
+    std::cout << number.input_val << " = "
               << number.intpart << " + "
               << number.fractpart << std::endl;
-    std::cout << "Sign: " << number.sign << std::endl;
-    printf("val = %.10f %f + %.10f\n", number.val, number.intpart, number.fractpart);
-    convert_float_part_to_binary(&number);
+    printf("val = %.10f %f + %.10f\n", number.input_val, number.intpart, number.fractpart);
 
+    uint32_t val1 = convert_float_part_to_binary(&number);
+    // std::cout << std::bitset<sizeof(val1) * CHAR_BIT>(val1) << "\n";
+
+    shift_point(&number, &val1);
+    // std::cout << std::bitset<sizeof(val1) * CHAR_BIT>(val1) << "\n";
+
+    concatenate_parts(&number);
+    // std::cout << std::bitset<sizeof(number.bin_val) * CHAR_BIT>(number.bin_val) << "\n";
     return 0;
 }
