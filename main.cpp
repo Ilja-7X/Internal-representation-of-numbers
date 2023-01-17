@@ -86,41 +86,28 @@ uint32_t convert_float_part_to_binary(struct NumberDescription *number)
     return val;
 }
 
-    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
-
-    /*int exponent = 0;
+void shift_point(struct NumberDescription *number, uint32_t *val)
+{
+    int exponent = 0;
     int res = 0;
 
-    if (size_intpart == 1)
+    if (number->size_intpart == 1)
     {
         for (int i = 31; i >= 0; i--)
         {
-            res = val >> 31;
-            val = val << 1;
+            res = *val >> 31;
+            *val = *val << 1;
             if (res == 1)
-            {
                 break;
-                ;
-            }
             else
-            {
                 exponent--;
-            }
-            std::cout << "--------";
-            std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
-            std::cout << "Exponent = " << exponent << "\n";
-
-            std::cout << "--------";
         }
     }
-    else if (size_intpart > 1)
+    else if (number->size_intpart > 1)
     {
-        exponent = size_intpart - 1;
-        val = val << 1;
+        exponent = number->size_intpart - 1;
+        *val = *val << 1;
     }
-    std::cout << "Exponent = " << exponent << "\n";
-    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";*/
-    return 0;
 }
 
 uint32_t reverse(uint32_t old_val) // меняем порядок битов с прямого на обратный
