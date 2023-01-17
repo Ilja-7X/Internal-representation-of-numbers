@@ -41,15 +41,12 @@ void split(struct NumberDescription *number)
     number->fractpart = (modf(abs(number->val), &number->intpart)); // находим целую и дробную часть
 }
 
-int convert_float_part_to_binary(struct NumberDescription *number)
+uint32_t convert_float_part_to_binary(struct NumberDescription *number)
 {
     uint32_t val = 0;
 
-    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
-
     int tmp_intpart = int(number->intpart);
     double tmp_fractpart = number->fractpart;
-    std::cout << "NUM = " << tmp_intpart << std::endl;
 
     int result;
 
@@ -67,21 +64,15 @@ int convert_float_part_to_binary(struct NumberDescription *number)
         result = tmp_intpart % 2;
         val = (val << 1) | result;
         tmp_intpart = tmp_intpart / 2;
-        std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
     }
     size_intpart = offset;
-    std::cout << "Intpart = " << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
-    std::cout << "size_intpart: " << size_intpart << std::endl;
     if (size_intpart > 24)
     {
         std::cout << "Число превышает допустимый диапазон\n";
-        return -1;
+        std::exit;
     }
 
     val = reverse(val);
-    std::cout << "Before reverse: " << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
-
-    std::cout << "Start\n";
 
     for (offset = 31 - size_intpart; tmp_fractpart != 0 && offset >= 0; offset--)
     {
@@ -89,11 +80,11 @@ int convert_float_part_to_binary(struct NumberDescription *number)
         result = int(tmp_fractpart);
         val = val | (result << offset);
         tmp_fractpart = tmp_fractpart - result;
-        std::cout << tmp_fractpart << std::endl;
-        std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
     }
 
-    std::cout << "End\n";
+    number->size_intpart = size_intpart;
+    return val;
+}
 
     std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
 
