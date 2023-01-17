@@ -5,7 +5,7 @@
 #include <climits>
 #include <stdlib.h>
 
-uint32_t swap(uint32_t old_val);
+uint32_t reverse(uint32_t old_val);
 
 struct NumberDescription
 {
@@ -78,8 +78,8 @@ int convert_float_part_to_binary(struct NumberDescription *number)
         return -1;
     }
 
-    val = swap(val);
-    std::cout << "Before swap: " << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+    val = reverse(val);
+    std::cout << "Before reverse: " << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
 
     std::cout << "Start\n";
 
@@ -132,7 +132,7 @@ int convert_float_part_to_binary(struct NumberDescription *number)
     return 0;
 }
 
-uint32_t swap(uint32_t old_val)
+uint32_t reverse(uint32_t old_val) // инверсия всех бит числа
 {
     uint32_t new_val = 0;
     int result;
