@@ -168,18 +168,12 @@ int main()
 
     split(&number);
 
-    std::cout << number.input_val << " = "
-              << number.intpart << " + "
-              << number.fractpart << std::endl;
-    printf("val = %.10f %f + %.10f\n", number.input_val, number.intpart, number.fractpart);
-
     uint32_t val1 = convert_float_part_to_binary(&number);
-    // std::cout << std::bitset<sizeof(val1) * CHAR_BIT>(val1) << "\n";
 
     shift_point(&number, &val1);
-    // std::cout << std::bitset<sizeof(val1) * CHAR_BIT>(val1) << "\n";
 
-    concatenate_parts(&number);
-    // std::cout << std::bitset<sizeof(number.bin_val) * CHAR_BIT>(number.bin_val) << "\n";
+    concatenate_parts(&number, val1);
+
+    std::cout << std::bitset<sizeof(number.bin_val) * CHAR_BIT>(number.bin_val) << "\n";
     return 0;
 }
