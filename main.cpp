@@ -132,7 +132,7 @@ int convert_float_part_to_binary(struct NumberDescription *number)
     return 0;
 }
 
-uint32_t reverse(uint32_t old_val) // инверсия всех бит числа
+uint32_t reverse(uint32_t old_val) // меняем порядок битов с прямого на обратный
 {
     uint32_t new_val = 0;
     int result;
