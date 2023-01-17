@@ -5,6 +5,8 @@
 #include <climits>
 #include <stdlib.h>
 
+uint32_t swap(uint32_t old_val);
+
 struct NumberDescription
 {
     double val = 0;
@@ -52,9 +54,15 @@ void convert_float_part_to_binary(struct NumberDescription *number)
     int result;
 
     int num_significant_digit;
-    int offset;
+    int offset = 0;
 
-    for (offset = 0; tmp_intpart > 0 && offset <= 31; offset++)
+    if (tmp_intpart == 0)
+    {
+        val = val << 1;
+        offset = 1;
+    }
+
+    for (; tmp_intpart > 0 && offset <= 31; offset++)
     {
         result = tmp_intpart % 2;
         val = (val << 1) | result;
@@ -64,18 +72,20 @@ void convert_float_part_to_binary(struct NumberDescription *number)
     num_significant_digit = offset;
     std::cout << "num_significant_digit: " << num_significant_digit << std::endl;
 
-    // while (tmp_fractpart != 0 && offset >= 0)
-    for (offset = 31; tmp_fractpart != 0 && offset >= 0; offset--)
+    val = swap(val);
+    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+
+    for (offset = 31 - num_significant_digit; tmp_fractpart != 0 && offset >= 0; offset--)
     {
         tmp_fractpart = tmp_fractpart * 2;
         result = int(tmp_fractpart);
         val = val | (result << offset);
         tmp_fractpart = tmp_fractpart - result;
-        std::cout << tmp_fractpart << std::endl;
-        std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
+        // std::cout << tmp_fractpart << std::endl;
+        //  std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
     }
 
-    int j;
+    std::cout << std::bitset<sizeof(val) * CHAR_BIT>(val) << "\n";
 }
 
 uint32_t swap(uint32_t old_val)
@@ -86,12 +96,13 @@ uint32_t swap(uint32_t old_val)
     {
         result = old_val & 1;
         old_val = old_val >> 1;
-        std::cout << std::bitset<sizeof(old_val) * CHAR_BIT>(old_val) << "\n";
+        // std::cout << std::bitset<sizeof(old_val) * CHAR_BIT>(old_val) << "\n";
         new_val = new_val | result;
-        new_val = new_val << 1;
+        if (i != 31)
+            new_val = new_val << 1;
     }
-    std::cout << std::bitset<sizeof(old_val) * CHAR_BIT>(old_val) << "\n";
-    std::cout << std::bitset<sizeof(new_val) * CHAR_BIT>(new_val) << "\n";
+    // std::cout << std::bitset<sizeof(old_val) * CHAR_BIT>(old_val) << "\n";
+    // std::cout << std::bitset<sizeof(new_val) * CHAR_BIT>(new_val) << "\n";
     return new_val;
 }
 
@@ -107,11 +118,11 @@ uint32_t getSign(uint32_t val)
 
 int main()
 {
-    /*struct NumberDescription number;
+    struct NumberDescription number;
 
     // std::cout << "Введите число: \n";
     // std::cin >> number.val;
-    number.val = 31.125;
+    number.val = 0.25;
 
     split(&number);
 
@@ -120,9 +131,7 @@ int main()
               << number.fractpart << std::endl;
     std::cout << "Sign: " << number.sign << std::endl;
     printf("val = %.10f %f + %.10f\n", number.val, number.intpart, number.fractpart);
-    convert_float_part_to_binary(&number);*/
+    convert_float_part_to_binary(&number);
 
-    uint32_t nums = 124648182;
-    swap(nums);
     return 0;
 }
