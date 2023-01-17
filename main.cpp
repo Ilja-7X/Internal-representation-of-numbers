@@ -111,6 +111,7 @@ void shift_point(struct NumberDescription *number, uint32_t *val) // смеща�
         *val = *val << 1;
     }
     number->exponent = exponent;
+    *val = *val >> 9;
 }
 
 void concatenate_parts(struct NumberDescription *number) // знак + характеристика + мантисса
